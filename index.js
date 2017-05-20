@@ -13,15 +13,17 @@ module.exports = function(homebridge) {
 
 function MiAirPurifier(log, config) {
 	this.log = log;
+	this.name = config.name || 'Air Purifier';
+
 	this.modes = [
 		[0, 'idle'], [40, 'silent'], [60, 'auto'], [80, 'low'], [100, 'medium']
 	];
 
 	// Air purifier is not available in Homekit yet, use as fan for now
-	this.fanService = new Service.Fan('Air Purifier');
+	this.fanService = new Service.Fan(this.name);
 
 	// Register another service as air quality sensor
-	this.airQualitySensorService = new Service.AirQualitySensor('Air Quality');
+	this.airQualitySensorService = new Service.AirQualitySensor(this.name);
 
 	this.serviceInfo = new Service.AccessoryInformation();
 

@@ -9,6 +9,7 @@
 	"accessories": [
 		{
 			"accessory": "MiAirPurifier",
+			"name": "Air Purifier"
 		}
 	]
 }
