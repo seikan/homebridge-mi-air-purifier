@@ -16,16 +16,20 @@ function MiAirPurifier(log, config) {
 	this.name = config.name || 'Air Purifier';
 
 	this.modes = [
-		[0, 'idle'], [40, 'silent'], [60, 'auto'], [80, 'low'], [100, 'medium']
+		[0, 'idle'], [60, 'auto'], [80, 'silent'], [100, 'favorite']
 	];
 
 	// Air purifier is not available in Homekit yet, use as fan for now
 	this.fanService = new Service.Fan(this.name);
 
 	// Register another service as air quality sensor
-	this.airQualitySensorService = new Service.AirQualitySensor(this.name);
+	this.airQualitySensorService = new Service.AirQualitySensor('Air Quality Sensor');
 
 	this.serviceInfo = new Service.AccessoryInformation();
+
+	this.serviceInfo
+		.setCharacteristic(Characteristic.Manufacturer, 'Xiaomi')
+		.setCharacteristic(Characteristic.Model, 'Air Purifier');
 
 	this.fanService
 		.getCharacteristic(Characteristic.On)
@@ -36,6 +40,10 @@ function MiAirPurifier(log, config) {
 		.getCharacteristic(Characteristic.RotationSpeed)
 		.on('get', this.getRotationSpeed.bind(this))
 		.on('set', this.setRotationSpeed.bind(this));
+
+	this.fanService
+		.addCharacteristic(Characteristic.CurrentRelativeHumidity)
+		.on('get', this.getCurrentRelativeHumidity.bind(this));
 
 	this.airQualitySensorService
 		.getCharacteristic(Characteristic.AirQuality)
@@ -65,11 +73,6 @@ MiAirPurifier.prototype = {
 
 				devices[reg.id] = device;
 				accessory.device = device;
-
-				accessory.serviceInfo
-					.setCharacteristic(Characteristic.Manufacturer, 'Xiao Mi')
-					.setCharacteristic(Characteristic.Model, device.model)
-					.setCharacteristic(Characteristic.SerialNumber, device.id);
 
 				log.debug('Discovered "%s" (ID: %s) on %s:%s.', reg.hostname, device.id, device.address, device.port);
 			});
@@ -104,11 +107,14 @@ MiAirPurifier.prototype = {
 
 		this.device.setPower(powerOn)
 			.then(function(state){
-				accessory.getRotationSpeed(accessory);
 				callback(null, state);
 			});
 
 		callback();
+	},
+
+	getCurrentRelativeHumidity: function(callback) {
+		callback(null, this.device.humidity);
 	},
 
 	getRotationSpeed: function(callback) {
