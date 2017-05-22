@@ -56,8 +56,8 @@ This is Xiaomi Mi Air Purifier plugin for [Homebridge](https://github.com/nfarin
          "accessory": "MiAirPurifier",
          "name": "Air Purifier",
          "showTemperature": true,
-   	  "showHumidity": true,
-   	  "showAirQuality": true
+         "showHumidity": true,
+         "showAirQuality": true
        }
      ]
    ```
