@@ -1,12 +1,11 @@
 var miio = require('miio');
-var Accessory, Service, Characteristic, UUIDGen;
+var Accessory, Service, Characteristic;
 var devices = [];
 
 module.exports = function(homebridge) {
 	Accessory = homebridge.platformAccessory;
 	Service = homebridge.hap.Service;
 	Characteristic = homebridge.hap.Characteristic;
-	UUIDGen = homebridge.hap.uuid;
 
 	homebridge.registerAccessory('homebridge-mi-air-purifier', 'MiAirPurifier', MiAirPurifier);
 }
@@ -14,40 +13,69 @@ module.exports = function(homebridge) {
 function MiAirPurifier(log, config) {
 	this.log = log;
 	this.name = config.name || 'Air Purifier';
+	this.showAirQuality = config.showAirQuality || false;
+	this.showTemperature = config.showTemperature || false;
+	this.showHumidity = config.showTemperature || false;
 
+	this.services = [];
+
+	// Modes supported
 	this.modes = [
 		[0, 'idle'], [60, 'auto'], [80, 'silent'], [100, 'favorite']
 	];
 
-	// Air purifier is not available in Homekit yet, use as fan for now
+	// Air purifier is not available in Homekit yet, register as Fan
 	this.fanService = new Service.Fan(this.name);
-
-	// Register another service as air quality sensor
-	this.airQualitySensorService = new Service.AirQualitySensor('Air Quality Sensor');
-
-	this.serviceInfo = new Service.AccessoryInformation();
-
-	this.serviceInfo
-		.setCharacteristic(Characteristic.Manufacturer, 'Xiaomi')
-		.setCharacteristic(Characteristic.Model, 'Air Purifier');
 
 	this.fanService
 		.getCharacteristic(Characteristic.On)
-		.on('get', this.getOn.bind(this))
-		.on('set', this.setOn.bind(this));
+		.on('get', this.getPowerState.bind(this))
+		.on('set', this.setPowerState.bind(this));
 
 	this.fanService
 		.getCharacteristic(Characteristic.RotationSpeed)
 		.on('get', this.getRotationSpeed.bind(this))
 		.on('set', this.setRotationSpeed.bind(this));
 
-	this.fanService
-		.addCharacteristic(Characteristic.CurrentRelativeHumidity)
-		.on('get', this.getCurrentRelativeHumidity.bind(this));
+	this.services.push(this.fanService);
 
-	this.airQualitySensorService
-		.getCharacteristic(Characteristic.AirQuality)
-		.on('get', this.getAirQuality.bind(this));
+	this.serviceInfo = new Service.AccessoryInformation();
+
+	this.serviceInfo
+		.setCharacteristic(Characteristic.Manufacturer, 'Xiaomi')
+		.setCharacteristic(Characteristic.Model, 'Air Purifier');
+	
+	this.services.push(this.serviceInfo);
+
+	if(this.showAirQuality){
+		this.airQualitySensorService = new Service.AirQualitySensor('Air Quality Sensor');
+
+		this.airQualitySensorService
+			.getCharacteristic(Characteristic.AirQuality)
+			.on('get', this.getAirQuality.bind(this));
+
+		this.services.push(this.airQualitySensorService);
+	}
+
+	if(this.showTemperature){
+		this.temperatureSensorService = new Service.TemperatureSensor('Temperature');
+
+		this.temperatureSensorService
+			.getCharacteristic(Characteristic.CurrentTemperature)
+			.on('get', this.getCurrentTemperature.bind(this));
+
+		this.services.push(this.temperatureSensorService);
+	}
+
+	if(this.showHumidity){
+		this.humiditySensorService = new Service.HumiditySensor('Humidity');
+
+		this.humiditySensorService
+			.getCharacteristic(Characteristic.CurrentRelativeHumidity)
+			.on('get', this.getCurrentRelativeHumidity.bind(this));
+
+		this.services.push(this.humiditySensorService);
+	}
 
 	this.discover();
 }
@@ -93,39 +121,54 @@ MiAirPurifier.prototype = {
 		});
 	},
 
-	getOn: function(callback) {
+	getPowerState: function(callback) {
+		if(!this.device){
+			callback(null, false);
+			return;
+		}
+
 		callback(null, this.device.power);
 	},
 
-	setOn: function(powerOn, callback) {
+	setPowerState: function(state, callback) {
 		if(!this.device){
 			callback(new Error('No air purifier is discovered.'));
 			return;
 		}
 
-		var accessory = this;
-
-		this.device.setPower(powerOn)
-			.then(function(state){
-				callback(null, state);
-			});
-
+		this.device.setPower(state);
 		callback();
 	},
 
 	getCurrentRelativeHumidity: function(callback) {
+		if(!this.device){
+			callback(null, 0);
+			return;
+		}
+
 		callback(null, this.device.humidity);
 	},
 
 	getRotationSpeed: function(callback) {
+		if(!this.device){
+			callback(null, 0);
+			return;
+		}
+
 		for(var item of this.modes){
 			if(this.device.mode == item[1]){
 				callback(null, item[0]);
+				return;
 			}
 		}
 	},
 
 	setRotationSpeed: function(speed, callback) {
+		if(!this.device){
+			callback(new Error('No air purifier is discovered.'));
+			return;
+		}
+
 		for(var item of this.modes){
 			if(speed <= item[0]){
 				this.log.debug('Set mode: ' + item[1]);
@@ -138,24 +181,38 @@ MiAirPurifier.prototype = {
 	},
 
 	getAirQuality: function(callback) {
-		var airQuality = Characteristic.AirQuality.UNKNOWN;
+		if(!this.device){
+			callback(null, Characteristic.AirQuality.UNKNOWN);
+			return;
+		}
 
-		if(this.device.aqi > 200)
-			airQuality = Characteristic.AirQuality.POOR;
+		var levels = [
+			[200, Characteristic.AirQuality.POOR],
+			[150, Characteristic.AirQuality.INFERIOR],
+			[100, Characteristic.AirQuality.FAIR],
+			[50, Characteristic.AirQuality.GOOD],
+			[0, Characteristic.AirQuality.EXCELLENT],
+		];
 
-		else if(this.device.aqi > 150)
-			airQuality = Characteristic.AirQuality.INFERIOR;
+		var quality = Characteristic.AirQuality.UNKNOWN;
 
-		else if(this.device.aqi > 100)
-			airQuality = Characteristic.AirQuality.FAIR;
+		for(var item of levels){
+			if(this.device.aqi > item[0]){
+				quality = item[1];
+				break;
+			}
+		}
 
-		else if(this.device.aqi > 50)
-			airQuality = Characteristic.AirQuality.GOOD;
+		callback(null, quality);
+	},
 
-		else
-			airQuality = Characteristic.AirQuality.EXCELLENT;
+	getCurrentTemperature: function(callback) {
+		if(!this.device){
+			callback(null, 0);
+			return;
+		}
 
-		callback(null, airQuality);
+		callback(null, this.device.temperature);
 	},
 
 	identify: function(callback) {
@@ -163,6 +220,6 @@ MiAirPurifier.prototype = {
 	},
 
 	getServices: function() {
-		return [this.serviceInfo, this.fanService, this.airQualitySensorService];
+		return this.services;
 	}
 };

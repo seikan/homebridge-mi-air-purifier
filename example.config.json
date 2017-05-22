@@ -9,7 +9,10 @@
 	"accessories": [
 		{
 			"accessory": "MiAirPurifier",
-			"name": "Air Purifier"
+			"name": "Air Purifier",
+			"showTemperature": true,
+			"showHumidity": true,
+			"showAirQuality": true
 		}
 	]
 }

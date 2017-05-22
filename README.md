@@ -26,9 +26,13 @@ This is Xiaomi Mi Air Purifier plugin for [Homebridge](https://github.com/nfarin
 
     ​
 
-* Display humidity within the **Fan** device.
+* Display temperature.
 
-* Display air quality as a separated device **Air Quality Sensor**.
+* Display humidity.
+
+* Display air quality.
+
+  ​
 
   ​
 
@@ -44,16 +48,21 @@ This is Xiaomi Mi Air Purifier plugin for [Homebridge](https://github.com/nfarin
 
    ​
 
-2. Add your Accessory to the `config.json`.
+2. Add following accessory to the `config.json`.
 
    ```
      "accessories": [
        {
          "accessory": "MiAirPurifier",
-         "name": "Air Purifier"
+         "name": "Air Purifier",
+         "showTemperature": true,
+   	  "showHumidity": true,
+   	  "showAirQuality": true
        }
      ]
    ```
+
+   ​**Notes:** Set value for `showTemperature`, `showHumidity`, `showAirQuality` to **true** or **false** to show or hide these sensors in Home app.
 
    ​
 
