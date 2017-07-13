@@ -42,7 +42,7 @@ This is Xiaomi Mi Air Purifier plugin for [Homebridge](https://github.com/nfarin
 
 1. Install required packages.
 
-   ```
+   ```bash
    npm install -g homebridge-mi-air-purifier miio
    ```
 
@@ -50,7 +50,7 @@ This is Xiaomi Mi Air Purifier plugin for [Homebridge](https://github.com/nfarin
 
 2. Add following accessory to the `config.json`.
 
-   ```
+   ```json
      "accessories": [
        {
          "accessory": "MiAirPurifier",
@@ -69,10 +69,39 @@ This is Xiaomi Mi Air Purifier plugin for [Homebridge](https://github.com/nfarin
 3. Restart Homebridge, and your Mi air purifier will be discovered automatically.
 
 
+#### For multiple air purifier devices
+
+1. Find your device id by [`miio --discover`](https://github.com/aholstenson/miio) command.
+
+   ```bash
+   $ miio --discover
+
+   Device ID: 9354723 # <= HERE !!!
+   Model info: zhimi.airpurifier.v6 (air-purifier)
+   Address: 192.168.2.237 (zhimi-airpurifier-v6_miio9354723.lan)
+   Token: e1054fb1ed5d911d5497c2568dee5daf via auto-token
+   Support: At least basic
+
+   Device ID: 6313355
+   Model info: zhimi.airpurifier.m1 (air-purifier)
+   Address: 192.168.2.179 (zhimi-airpurifier-m1_miio6313355.lan)
+   Token: 0ec3de428762e805af27594de378aea2 via auto-token
+   Support: At least basic
+   ```
+
+2. Add `deviceId` options to the `config.json`.
+
+   ```json
+   {
+     "accessory": "MiAirPurifier",
+     "name": "Air Purifier",
+     "showTemperature": true,
+     "showHumidity": true,
+     "showAirQuality": true,
+     "deviceId": 9354723
+   }
+   ```
 
 ### License
 
 See the [LICENSE](https://github.com/seikan/homebridge-mi-air-purifier/blob/master/LICENSE.md) file for license rights and limitations (MIT).
-
-
-

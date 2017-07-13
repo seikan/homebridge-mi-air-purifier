@@ -16,6 +16,7 @@ function MiAirPurifier(log, config) {
 	this.showAirQuality = config.showAirQuality || false;
 	this.showTemperature = config.showTemperature || false;
 	this.showHumidity = config.showTemperature || false;
+	this.deviceId = config.deviceId;
 
 	this.services = [];
 
@@ -97,6 +98,8 @@ MiAirPurifier.prototype = {
 
 			miio.device(reg).then(function(device){
 				if(device.type != 'air-purifier')
+					return;
+				if(accessory.deviceId && accessory.deviceId != reg.id)
 					return;
 
 				devices[reg.id] = device;
