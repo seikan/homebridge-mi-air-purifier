@@ -1,6 +1,6 @@
 {
   "name": "homebridge-mi-air-purifier",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Xiaomi Mi air purifier plugin for Homebridge.",
   "license": "MIT",
   "keywords": [
