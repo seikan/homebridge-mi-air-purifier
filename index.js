@@ -197,7 +197,7 @@ MiAirPurifier.prototype = {
 		var quality = Characteristic.AirQuality.UNKNOWN;
 
 		for(var item of levels){
-			if(this.device.aqi > item[0]){
+			if(this.device.aqi >= item[0]){
 				quality = item[1];
 				break;
 			}
