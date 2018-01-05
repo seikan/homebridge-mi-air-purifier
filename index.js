@@ -17,6 +17,9 @@ function MiAirPurifier(log, config) {
 	this.showAirQuality = config.showAirQuality || false;
 	this.showTemperature = config.showTemperature || false;
 	this.showHumidity = config.showHumidity || false;
+  this.nameAirQuality = config.nameAirQuality || 'Air Quality';
+  this.nameTemperature = config.nameTemperature || 'Temperature';
+  this.nameHumidity = config.nameHumidity || 'Humidity';
 
 	this.services = [];
 
@@ -70,7 +73,7 @@ function MiAirPurifier(log, config) {
 	this.services.push(this.serviceInfo);
 
 	if(this.showAirQuality){
-		this.airQualitySensorService = new Service.AirQualitySensor('Air Quality');
+		this.airQualitySensorService = new Service.AirQualitySensor(this.nameAirQuality);
 
 		this.airQualitySensorService
 			.getCharacteristic(Characteristic.AirQuality)
@@ -80,7 +83,7 @@ function MiAirPurifier(log, config) {
 	}
 
 	if(this.showTemperature){
-		this.temperatureSensorService = new Service.TemperatureSensor('Temperature');
+		this.temperatureSensorService = new Service.TemperatureSensor(this.nameTemperature);
 
 		this.temperatureSensorService
 			.getCharacteristic(Characteristic.CurrentTemperature)
@@ -90,7 +93,7 @@ function MiAirPurifier(log, config) {
 	}
 
 	if(this.showHumidity){
-		this.humiditySensorService = new Service.HumiditySensor('Humidity');
+		this.humiditySensorService = new Service.HumiditySensor(this.nameHumidity);
 
 		this.humiditySensorService
 			.getCharacteristic(Characteristic.CurrentRelativeHumidity)
