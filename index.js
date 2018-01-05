@@ -219,10 +219,10 @@ MiAirPurifier.prototype = {
 
 	getAirQuality: function(callback) {
 		var levels = [
-			[200, Characteristic.AirQuality.POOR],
-			[150, Characteristic.AirQuality.INFERIOR],
-			[100, Characteristic.AirQuality.FAIR],
-			[50, Characteristic.AirQuality.GOOD],
+			[150, Characteristic.AirQuality.POOR],
+			[115, Characteristic.AirQuality.INFERIOR],
+			[75, Characteristic.AirQuality.FAIR],
+			[35, Characteristic.AirQuality.GOOD],
 			[0, Characteristic.AirQuality.EXCELLENT],
 		];
 
