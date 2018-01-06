@@ -17,9 +17,9 @@ function MiAirPurifier(log, config) {
 	this.showAirQuality = config.showAirQuality || false;
 	this.showTemperature = config.showTemperature || false;
 	this.showHumidity = config.showHumidity || false;
-  this.nameAirQuality = config.nameAirQuality || 'Air Quality';
-  this.nameTemperature = config.nameTemperature || 'Temperature';
-  this.nameHumidity = config.nameHumidity || 'Humidity';
+	this.nameAirQuality = config.nameAirQuality || 'Air Quality';
+	this.nameTemperature = config.nameTemperature || 'Temperature';
+	this.nameHumidity = config.nameHumidity || 'Humidity';
 
 	this.services = [];
 
