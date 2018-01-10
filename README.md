@@ -58,7 +58,6 @@ This is Xiaomi Mi Air Purifier plugin for [Homebridge](https://github.com/nfarin
    miio --discover --sync
    ```
 
-    
 
 3. You may need to wait few minutes until you get the response similar to below:
 
@@ -92,7 +91,7 @@ This is Xiaomi Mi Air Purifier plugin for [Homebridge](https://github.com/nfarin
          "accessory": "MiAirPurifier",
          "name": "Air Purifier",
          "ip": "ADDRESS_OF_THE_AIR_PURIFIER",
-         "token": "TOKEN_FROM_STEP_3".
+         "token": "TOKEN_FROM_STEP_3",
          "showTemperature": true,
          "showHumidity": true,
          "showAirQuality": true

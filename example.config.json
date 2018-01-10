@@ -10,6 +10,8 @@
 		{
 			"accessory": "MiAirPurifier",
 			"name": "Air Purifier",
+			"ip": "192.168.1.8",
+			"token": "6f7a65786550386c700a6b526666744d",
 			"showTemperature": true,
 			"showHumidity": true,
 			"showAirQuality": true
