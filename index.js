@@ -79,6 +79,13 @@ function MiAirPurifier(log, config) {
 			.getCharacteristic(Characteristic.AirQuality)
 			.on('get', this.getAirQuality.bind(this));
 
+		this.airQualitySensorService
+			.getCharacteristic(Characteristic.AirParticulateDensity)
+			.on('get', this.getPM25.bind(this));
+
+		this.airQualitySensorService
+			.setCharacteristic(Characteristic.AirParticulateSize, '2.5um');
+
 		this.services.push(this.airQualitySensorService);
 	}
 
@@ -235,6 +242,16 @@ MiAirPurifier.prototype = {
 					}
 				}
             }).catch(err => {
+				callback(err);
+			});
+	},
+
+	getPM25: function(callback) {
+		this.device.call('get_prop', ['aqi'])
+			.then(result => {
+				callback(null, result[0]);
+			})
+			.catch(err => {
 				callback(err);
 			});
 	},
