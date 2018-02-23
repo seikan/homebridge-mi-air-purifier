@@ -80,12 +80,12 @@ function MiAirPurifier(log, config) {
 			.on('get', this.getAirQuality.bind(this));
 
 		this.airQualitySensorService
-			.getCharacteristic(Characteristic.AirParticulateDensity)
+			.getCharacteristic(Characteristic.PM2_5Density)
 			.on('get', this.getPM25.bind(this));
 
-		this.airQualitySensorService
-			.setCharacteristic(Characteristic.AirParticulateSize, '2.5um');
-
+		//this.airQualitySensorService
+		//	.setCharacteristic(Characteristic.AirParticulateSize, '2.5um');
+		//
 		this.services.push(this.airQualitySensorService);
 	}
 
