@@ -29,10 +29,6 @@ function MiAirPurifier(log, config) {
 	if(!this.token)
 		throw new Error('Your must provide token of the Air Purifier.');
 
-	// Modes supported
-	this.modes = [
-		[0, 'idle'], [60, 'auto'], [80, 'silent'], [100, 'favorite']
-	];
 
 	// Register the service
 	this.service = new Service.AirPurifier(this.name);
@@ -196,32 +192,28 @@ MiAirPurifier.prototype = {
 	},
 
 	getRotationSpeed: function(callback) {
-		this.device.call('get_prop', ['mode'])
+		this.device.call('get_prop', ['favorite_level'])
 			.then(result => {
-				for(var item of this.modes){
-					if(result[0] == item[1]){
-						callback(null, item[0]);
-						return;
-					}
-				}
+				callback(null, Math.ceil( result[0] * 6.25 ));
 			}).catch(err => {
 				callback(err);
 			});
 	},
 
 	setRotationSpeed: function(speed, callback) {
-		for(var item of this.modes){
-			if(speed <= item[0]){
-				this.device.call('set_mode', [item[1]])
-					.then(result => {
-						(result[0] === 'ok') ? callback() : callback(new Error(result[0]));
-					})
-					.catch(err => {
-						callback(err);
-					});
-				break;
-			}
-		}
+		this.device.call('get_prop', ['mode'])
+			.then(result => {
+				if(result[0] != 'favorite'){
+					this.device.call('set_mode', ['favorite'])
+					return;
+				}
+			})
+		this.device.call('set_level_favorite',[Math.ceil( speed / 6.25 )])
+			.then(result => {
+				callback(null, result[0]);
+			}).catch(err => {
+				callback(err);
+			});
 	},
 
 	getAirQuality: function(callback) {
