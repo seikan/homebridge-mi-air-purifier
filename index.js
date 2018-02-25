@@ -110,9 +110,13 @@ function MiAirPurifier(log, config) {
 
 MiAirPurifier.prototype = {
 	discover: function(){
-		this.device = new miio.Device({
-			address	: this.ip,
-			token	: this.token
+
+		miio.device({ address: this.ip, token: this.token })
+		.then(device => {
+				this.device = device;
+		})
+		.catch(err => {
+			console.log('ERROR: ', err);
 		});
 	},
 
