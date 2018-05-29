@@ -10,7 +10,9 @@ This is Xiaomi Mi Air Purifier plugin for [Homebridge](https://github.com/nfarin
 
 * Switch auto / manual mode.
 
-* Turn parental mode on / off.
+* Turn child lock on / off.
+
+* Turn LED light on / off.
 
 * Control modes:
 
@@ -89,17 +91,28 @@ This is Xiaomi Mi Air Purifier plugin for [Homebridge](https://github.com/nfarin
      "accessories": [
        {
          "accessory": "MiAirPurifier",
-         "name": "Air Purifier",
+         "name": "Bed Room Air Purifier",
          "ip": "ADDRESS_OF_THE_AIR_PURIFIER",
          "token": "TOKEN_FROM_STEP_3",
          "showTemperature": true,
          "showHumidity": true,
-         "showAirQuality": true
+         "showAirQuality": true,
+         "showLED": true
+       },
+       {
+         "accessory": "MiAirPurifier",
+         "name": "Living Room Air Purifier",
+         "ip": "ADDRESS_OF_THE_AIR_PURIFIER",
+         "token": "TOKEN_FROM_STEP_3",
+         "showTemperature": true,
+         "showHumidity": true,
+         "showAirQuality": true,
+         "showLED": true
        }
      ]
    ```
 
-   ​**Notes:** Set value for `showTemperature`, `showHumidity`, `showAirQuality` to **true** or **false** to show or hide these sensors in Home app.
+   **Notes:** Set value for `showTemperature`, `showHumidity`, `showAirQuality`, `showLED` to **true** or **false** to show or hide these sensors in Home app.
 
    ​
 
