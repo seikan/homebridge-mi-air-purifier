@@ -30,13 +30,13 @@ function MiAirPurifier(log, config) {
     this.aqi = null;
     this.led = null;
 
-	this.levels = [
-		[200, Characteristic.AirQuality.POOR],
-		[150, Characteristic.AirQuality.INFERIOR],
-		[100, Characteristic.AirQuality.FAIR],
-		[50, Characteristic.AirQuality.GOOD],
-		[0, Characteristic.AirQuality.EXCELLENT],
-	];
+    this.levels = [
+        [200, Characteristic.AirQuality.POOR],
+        [150, Characteristic.AirQuality.INFERIOR],
+        [100, Characteristic.AirQuality.FAIR],
+        [50, Characteristic.AirQuality.GOOD],
+        [0, Characteristic.AirQuality.EXCELLENT],
+    ];
 
     this.services = [];
 
@@ -219,6 +219,11 @@ MiAirPurifier.prototype = {
     },
 
     setActiveState: function(state, callback) {
+        if (!this.device) {
+            callback(new Error('No Air Purifier is discovered.'));
+            return;
+        }
+
         this.device.call('set_power', [(state) ? 'on' : 'off'])
             .catch(err => {
                 callback(err);
@@ -248,6 +253,11 @@ MiAirPurifier.prototype = {
     },
 
     setTargetAirPurifierState: function(state, callback) {
+        if (!this.device) {
+            callback(new Error('No Air Purifier is discovered.'));
+            return;
+        }
+
         this.device.call('set_mode', [(state) ? 'auto' : 'favorite'])
             .then(result => {
                 (result[0] === 'ok') ? callback(): callback(new Error(result[0]));
@@ -269,6 +279,11 @@ MiAirPurifier.prototype = {
     },
 
     getLockPhysicalControls: async function(callback) {
+        if (!this.device) {
+            callback(new Error('No Air Purifier is discovered.'));
+            return;
+        }
+
         await this.device.call('get_prop', ['child_lock'])
             .then(result => {
                 callback(null, result[0] === 'on' ? Characteristic.LockPhysicalControls.CONTROL_LOCK_ENABLED : Characteristic.LockPhysicalControls.CONTROL_LOCK_DISABLED);
@@ -279,6 +294,11 @@ MiAirPurifier.prototype = {
     },
 
     setLockPhysicalControls: async function(state, callback) {
+        if (!this.device) {
+            callback(new Error('No Air Purifier is discovered.'));
+            return;
+        }
+
         await this.device.call('set_child_lock', [(state) ? 'on' : 'off'])
             .then(result => {
                 (result[0] === 'ok') ? callback(): callback(new Error(result[0]));
@@ -288,6 +308,11 @@ MiAirPurifier.prototype = {
     },
 
     getRotationSpeed: async function(callback) {
+        if (!this.device) {
+            callback(new Error('No Air Purifier is discovered.'));
+            return;
+        }
+
         await this.device.call('get_prop', ['favorite_level'])
             .then(result => {
                 callback(null, Math.ceil(result[0] * 6.25));
@@ -296,8 +321,13 @@ MiAirPurifier.prototype = {
             });
     },
 
-    setRotationSpeed: function(speed, callback) {
-        this.device.call('get_prop', ['mode'])
+    setRotationSpeed: async function(speed, callback) {
+        if (!this.device) {
+            callback(new Error('No Air Purifier is discovered.'));
+            return;
+        }
+
+        await this.device.call('get_prop', ['mode'])
             .then(result => {
                 if (result[0] != 'favorite') {
                     this.device.call('set_mode', ['favorite'])
@@ -308,7 +338,7 @@ MiAirPurifier.prototype = {
                 callback(err)
             });
 
-        this.device.call('set_level_favorite', [Math.ceil(speed / 6.25)])
+        await this.device.call('set_level_favorite', [Math.ceil(speed / 6.25)])
             .then(result => {
                 callback(null, result[0]);
             })
@@ -322,6 +352,11 @@ MiAirPurifier.prototype = {
     },
 
     setLED: async function(state, callback) {
+        if (!this.device) {
+            callback(new Error('No Air Purifier is discovered.'));
+            return;
+        }
+
         await this.device.call('set_led', [(state) ? 'on' : 'off'])
             .catch(err => {
                 callback(err);
