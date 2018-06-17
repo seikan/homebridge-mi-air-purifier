@@ -1,20 +1,20 @@
 {
-	"bridge": {
-		"name": "Homebridge",
-		"username": "CC:22:3D:E3:CE:30",
-		"port": 51826,
-		"pin": "123-45-568"
-	},
+  "bridge": {
+    "name": "Homebridge",
+    "username": "CC:22:3D:E3:CE:30",
+    "port": 51826,
+    "pin": "123-45-568"
+  },
 
-	"accessories": [
-		{
-			"accessory": "MiAirPurifier",
-			"name": "Air Purifier",
-			"ip": "192.168.1.8",
-			"token": "6f7a65786550386c700a6b526666744d",
-			"showTemperature": true,
-			"showHumidity": true,
-			"showAirQuality": true
-		}
-	]
+  "accessories": [{
+    "accessory": "MiAirPurifier",
+    "name": "Air Purifier",
+    "ip": "192.168.1.8",
+    "token": "6f7a65786550386c700a6b526666744d",
+    "showTemperature": true,
+    "showHumidity": true,
+    "showAirQuality": true,
+    "showLED": true,
+    "showBuzzer": true
+  }]
 }

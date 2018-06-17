@@ -10,27 +10,13 @@ This is Xiaomi Mi Air Purifier plugin for [Homebridge](https://github.com/nfarin
 
 * Switch auto / manual mode.
 
-* Turn child lock on / off.
+* Change fan rotation speed.
 
-* Turn LED light on / off.
+* Switch child lock on / off.
 
-* Control modes:
+* Switch LED light on / off.
 
-  - `Idle / Off`: Lift fan speed to 0% from Home app.
-
-  - `Auto`: Lift fan speed between 1 - 60%.
-
-  - `Silent`: Lift fan speed between 61 - 80%.
-
-  - `Favorite / High`: Lift fan speed great than 80%.
-
-    **Notes:** Alternatively, you can ask Siri to change the fan speed within the range to adjust the air purifier mode. Example:
-
-    ```
-    Hey Siri, change the air purifier speed to 100.
-    ```
-
-    ​
+* Switch buzzer sound on / off.
 
 * Display temperature.
 
@@ -38,11 +24,7 @@ This is Xiaomi Mi Air Purifier plugin for [Homebridge](https://github.com/nfarin
 
 * Display air quality.
 
-  ​
-
-  ​
-
-
+  
 
 ### Installation
 
@@ -57,7 +39,7 @@ This is Xiaomi Mi Air Purifier plugin for [Homebridge](https://github.com/nfarin
 2. Make sure your Homebridge server is same network with your air purifier, then run following command to discover the token.
 
    ```
-   miio --discover --sync
+   miio discover --sync
    ```
 
 
@@ -80,7 +62,7 @@ This is Xiaomi Mi Air Purifier plugin for [Homebridge](https://github.com/nfarin
 6. Then run the command again.
 
    ```
-   miio --discover --sync
+   miio discover --sync
    ```
 
    ​
@@ -97,7 +79,8 @@ This is Xiaomi Mi Air Purifier plugin for [Homebridge](https://github.com/nfarin
          "showTemperature": true,
          "showHumidity": true,
          "showAirQuality": true,
-         "showLED": true
+         "showLED": true,
+         "showBuzzer": true
        },
        {
          "accessory": "MiAirPurifier",
@@ -107,12 +90,13 @@ This is Xiaomi Mi Air Purifier plugin for [Homebridge](https://github.com/nfarin
          "showTemperature": true,
          "showHumidity": true,
          "showAirQuality": true,
-         "showLED": true
+         "showLED": true,
+         "showBuzzer": true
        }
      ]
    ```
 
-   **Notes:** Set value for `showTemperature`, `showHumidity`, `showAirQuality`, `showLED` to **true** or **false** to show or hide these sensors in Home app.
+   **Notes:** Set value for `showTemperature`, `showHumidity`, `showAirQuality`, `showLED`, `showBuzzer` to **true** or **false** to show or hide these sensors in Home app.
 
    ​
 
