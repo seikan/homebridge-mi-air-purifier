@@ -19,6 +19,8 @@ function MiAirPurifier(log, config) {
     this.showHumidity = config.showHumidity || false;
     this.showLED = config.showLED || false;
     this.showBuzzer = config.showBuzzer || false;
+    this.goodQualityThreshold = Number(config.goodQualityThreshold || 50);
+    this.fairQualityThreshold = Number(config.fairQualityThreshold || 100);
 
     this.nameAirQuality = config.nameAirQuality || 'Air Quality';
     this.nameTemperature = config.nameTemperature || 'Temperature';
@@ -33,8 +35,8 @@ function MiAirPurifier(log, config) {
     this.levels = [
         [200, Characteristic.AirQuality.POOR],
         [150, Characteristic.AirQuality.INFERIOR],
-        [100, Characteristic.AirQuality.FAIR],
-        [50, Characteristic.AirQuality.GOOD],
+        [this.fairQualityThreshold, Characteristic.AirQuality.FAIR],
+        [this.goodQualityThreshold, Characteristic.AirQuality.GOOD],
         [0, Characteristic.AirQuality.EXCELLENT],
     ];
 
